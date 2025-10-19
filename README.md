@@ -178,7 +178,7 @@ npm run test:report
 - ✅ **Complete history** of all executions
 
 ### **📊 Live Test Reports**:
-- **GitHub Pages**:
+- **GitHub Pages**: [View Latest Reports](https://henriquecervi.github.io/final-project-web-automation/)
 - **Artifacts**: Download screenshots, videos, and detailed reports
 - **Test Summary**: Comprehensive execution summaries in GitHub Actions
 
