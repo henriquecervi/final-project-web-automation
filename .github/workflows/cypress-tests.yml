@@ -153,14 +153,18 @@ jobs:
           path: cypress/reports
         continue-on-error: true
         
-      - name: 📁 Ensure Reports Directory
+      - name: 📁 Prepare Reports for Pages
         run: |
-          mkdir -p cypress/reports
+          mkdir -p reports
           
-          # If no real reports were downloaded, create a simple index
-          if [ ! -f cypress/reports/mochawesome*.html ] && [ ! -f cypress/reports/*.html ]; then
-            echo "Creating index page for GitHub Pages..."
-            cat > cypress/reports/index.html << 'EOF'
+          # Copy reports from cypress/reports to reports (root for GitHub Pages)
+          if [ -d cypress/reports ] && [ "$(ls -A cypress/reports)" ]; then
+            echo "✅ Copying real test reports to root..."
+            cp -r cypress/reports/* reports/
+            ls -la reports/
+          else
+            echo "❌ No real reports found, creating placeholder..."
+            cat > reports/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
@@ -189,8 +193,6 @@ jobs:
           </body>
           </html>
           EOF
-          else
-            echo "✅ Real test reports found and will be deployed."
           fi
           
       - name: 🏗️ Setup Pages
@@ -199,7 +201,7 @@ jobs:
       - name: 📊 Upload Reports to Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: cypress/reports
+          path: ./reports
           
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
