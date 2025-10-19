@@ -161,6 +161,13 @@ jobs:
           if [ -d cypress/reports ] && [ "$(ls -A cypress/reports)" ]; then
             echo "✅ Copying real test reports to root..."
             cp -r cypress/reports/* reports/
+            
+            # Rename the mochawesome file to index.html for GitHub Pages
+            if [ -f reports/mochawesome_*.html ]; then
+              mv reports/mochawesome_*.html reports/index.html
+              echo "✅ Renamed mochawesome report to index.html"
+            fi
+            
             ls -la reports/
           else
             echo "❌ No real reports found, creating placeholder..."
