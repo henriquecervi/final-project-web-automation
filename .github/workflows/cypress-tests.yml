@@ -151,6 +151,15 @@ jobs:
         with:
           name: cypress-reports-chrome
           path: cypress/reports
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+        
+      - name: 📁 Create Reports Directory
+        run: |
+          mkdir -p cypress/reports
+          echo "# PGATS Final Project - Web Automation Reports" > cypress/reports/index.html
+          echo "<h1>Test Reports</h1>" >> cypress/reports/index.html
+          echo "<p>Reports will be available after test execution.</p>" >> cypress/reports/index.html
           
       - name: 🏗️ Setup Pages
         uses: actions/configure-pages@v4
