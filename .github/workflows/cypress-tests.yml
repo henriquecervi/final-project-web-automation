@@ -156,13 +156,19 @@ jobs:
       - name: 📁 Create Reports Directory (if needed)
         run: |
           mkdir -p cypress/reports
-          if [ ! -f cypress/reports/index.html ]; then
-            echo "<!DOCTYPE html>" > cypress/reports/index.html
-            echo "<html><head><title>PGATS Final Project - Web Automation Reports</title></head>" >> cypress/reports/index.html
-            echo "<body><h1>🎯 PGATS Final Project - Web Automation Reports</h1>" >> cypress/reports/index.html
-            echo "<p>Test reports will be available after execution.</p>" >> cypress/reports/index.html
-            echo "<p>Last updated: $(date)</p></body></html>" >> cypress/reports/index.html
-          fi
+          echo "<!DOCTYPE html>" > cypress/reports/index.html
+          echo "<html><head>" >> cypress/reports/index.html
+          echo "<title>PGATS Final Project - Web Automation Reports</title>" >> cypress/reports/index.html
+          echo "<meta charset='utf-8'>" >> cypress/reports/index.html
+          echo "<style>body{font-family:Arial,sans-serif;margin:40px;background:#f5f5f5;}" >> cypress/reports/index.html
+          echo "h1{color:#333;}.container{background:white;padding:20px;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);}</style>" >> cypress/reports/index.html
+          echo "</head><body>" >> cypress/reports/index.html
+          echo "<div class='container'>" >> cypress/reports/index.html
+          echo "<h1>🎯 PGATS Final Project - Web Automation Reports</h1>" >> cypress/reports/index.html
+          echo "<p><strong>Status:</strong> GitHub Pages is working!</p>" >> cypress/reports/index.html
+          echo "<p><strong>Last updated:</strong> $(date)</p>" >> cypress/reports/index.html
+          echo "<p>Test reports will be available after execution.</p>" >> cypress/reports/index.html
+          echo "</div></body></html>" >> cypress/reports/index.html
           
       - name: 🏗️ Setup Pages
         uses: actions/configure-pages@v4
@@ -170,7 +176,7 @@ jobs:
       - name: 📊 Upload Reports to Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./
+          path: cypress/reports
           
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
