@@ -1,0 +1,174 @@
+name: 🚀 PGATS - Cypress E2E Tests - Final Project
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'Browser to run the tests'
+        required: false
+        default: 'chrome'
+        type: choice
+        options:
+        - chrome
+        - firefox
+        - edge
+
+jobs:
+  cypress-run:
+    name: 🎯 Execute 10 Required Test Cases
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome]
+        
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: 📦 Install dependencies
+        run: |
+          npm ci
+          npx cypress verify
+          
+      - name: 🏗️ Create necessary directories
+        run: |
+          mkdir -p cypress/reports
+          mkdir -p cypress/screenshots
+          mkdir -p cypress/videos
+          
+      - name: 🚀 Run Cypress Tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: ${{ matrix.browser }}
+          spec: cypress/e2e/pgats-final-tests.cy.js
+          config: video=true,screenshotOnRunFailure=true
+          wait-on: 'https://automationexercise.com'
+          wait-on-timeout: 120
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: 📊 Generate Mochawesome Report
+        if: always()
+        run: |
+          npm run test:report || true
+          
+      - name: 📁 Upload Artifacts - Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots-${{ matrix.browser }}
+          path: cypress/screenshots
+          retention-days: 7
+          
+      - name: 🎥 Upload Artifacts - Videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos-${{ matrix.browser }}
+          path: cypress/videos
+          retention-days: 7
+          
+      - name: 📋 Upload Artifacts - Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-reports-${{ matrix.browser }}
+          path: cypress/reports
+          retention-days: 30
+          
+      - name: 📈 Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: 'Cypress Test Results - ${{ matrix.browser }}'
+          path: 'cypress/reports/*.json'
+          reporter: 'mochawesome-json'
+          fail-on-error: false
+
+  test-summary:
+    name: 📊 Test Summary
+    runs-on: ubuntu-latest
+    needs: cypress-run
+    if: always()
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 📋 Execution Summary
+        run: |
+          echo "## 🎯 PGATS - Final Project - Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Executed Test Cases:" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC1**: Register User" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC2**: Login User with correct email and password" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC3**: Login User with incorrect email and password" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC4**: Logout User" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC5**: Register User with existing email" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC6**: Contact Us Form" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC8**: Verify All Products and product detail page" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC9**: Search Product" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC10**: Verify Subscription in home page" >> $GITHUB_STEP_SUMMARY
+          echo "- **TC15**: Place Order: Register while Checkout" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🏗️ Architecture Used:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Page Object Model** for modular organization" >> $GITHUB_STEP_SUMMARY
+          echo "- **Faker.js** for dynamic and unique data" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mochawesome Reporter** for professional reports" >> $GITHUB_STEP_SUMMARY
+          echo "- **GitHub Actions** for automated CI/CD" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Generated Artifacts:" >> $GITHUB_STEP_SUMMARY
+          echo "- Screenshots (in case of failures)" >> $GITHUB_STEP_SUMMARY
+          echo "- Execution videos" >> $GITHUB_STEP_SUMMARY
+          echo "- Detailed HTML reports" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "**🎓 Project**: PGATS - Final Project - Web Automation" >> $GITHUB_STEP_SUMMARY
+          echo "**🌐 Tested Site**: https://automationexercise.com" >> $GITHUB_STEP_SUMMARY
+          echo "**⚡ Framework**: Cypress" >> $GITHUB_STEP_SUMMARY
+
+  deploy-reports:
+    name: 📊 Deploy Reports to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [cypress-run, test-summary]
+    if: always() && github.ref == 'refs/heads/main'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 📥 Download Reports Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cypress-reports-chrome
+          path: cypress/reports
+          
+      - name: 🏗️ Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: 📊 Upload Reports to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./
+          
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
