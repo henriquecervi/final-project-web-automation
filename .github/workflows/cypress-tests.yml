@@ -135,7 +135,7 @@ jobs:
     name: 📊 Deploy Reports to GitHub Pages
     runs-on: ubuntu-latest
     needs: [cypress-run, test-summary]
-    if: always() && github.ref == 'refs/heads/main'
+    if: always()
     
     permissions:
       contents: read
@@ -157,21 +157,8 @@ jobs:
         run: |
           mkdir -p reports
           
-          # Copy reports from cypress/reports to reports (root for GitHub Pages)
-          if [ -d cypress/reports ] && [ "$(ls -A cypress/reports)" ]; then
-            echo "✅ Copying real test reports to root..."
-            cp -r cypress/reports/* reports/
-            
-            # Rename the mochawesome file to index.html for GitHub Pages
-            if [ -f reports/mochawesome_*.html ]; then
-              mv reports/mochawesome_*.html reports/index.html
-              echo "✅ Renamed mochawesome report to index.html"
-            fi
-            
-            ls -la reports/
-          else
-            echo "❌ No real reports found, creating placeholder..."
-            cat > reports/index.html << 'EOF'
+          # Always create index.html first
+          cat > reports/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
@@ -200,7 +187,29 @@ jobs:
           </body>
           </html>
           EOF
+          
+          # If we have real reports, copy them and rename the main one
+          if [ -d cypress/reports ] && [ "$(ls -A cypress/reports)" ]; then
+            echo "✅ Copying real test reports..."
+            cp -r cypress/reports/* reports/
+            
+            # Rename the mochawesome file to index.html for GitHub Pages
+            if [ -f reports/mochawesome_*.html ]; then
+              mv reports/mochawesome_*.html reports/index.html
+              echo "✅ Renamed mochawesome report to index.html"
+            fi
           fi
+          
+          echo "Final reports directory contents:"
+          ls -la reports/
+          
+      - name: 🔍 Debug - Before Upload
+        run: |
+          echo "=== DEBUGGING BEFORE UPLOAD ==="
+          echo "Current directory: $(pwd)"
+          echo "Reports directory contents:"
+          ls -la reports/ || echo "Reports directory does not exist"
+          echo "=== END DEBUG ==="
           
       - name: 🏗️ Setup Pages
         uses: actions/configure-pages@v4
