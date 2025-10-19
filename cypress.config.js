@@ -9,19 +9,13 @@ module.exports = defineConfig({
     viewportHeight: 720,
     video: true,
     screenshotOnRunFailure: true,
-    reporter: ['mochawesome', 'junit'],
+    reporter: 'mochawesome',
     reporterOptions: {
-      mochawesome: {
-        reportDir: 'cypress/reports',
-        overwrite: false,
-        html: true,
-        json: true,
-        timestamp: 'mmddyyyy_HHMMss'
-      },
-      junit: {
-        outputDir: 'cypress/reports',
-        outputFileFormat: 'junit-[hash].xml'
-      }
+      reportDir: 'cypress/reports',
+      overwrite: false,
+      html: true,
+      json: true,
+      timestamp: 'mmddyyyy_HHMMss'
     },
     setupNodeEvents(on, config) {
       // implement node event listeners here

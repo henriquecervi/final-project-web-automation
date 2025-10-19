@@ -88,15 +88,6 @@ jobs:
           name: cypress-reports-${{ matrix.browser }}
           path: cypress/reports
           retention-days: 30
-          
-      - name: 📈 Publish Test Results
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: 'Cypress Test Results - ${{ matrix.browser }}'
-          path: 'cypress/reports/*.xml'
-          reporter: 'junit'
-          fail-on-error: false
 
   test-summary:
     name: 📊 Test Summary
