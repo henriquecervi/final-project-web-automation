@@ -41,9 +41,20 @@ function generateUniqueEmail() {
 }
 
 function generateProductSearchData() {
-  const products = ['Blue Top', 'Men Tshirt', 'Dress', 'Jeans', 'Shirt'];
+  const searchTerms = [
+    'dress',
+    'shirt',
+    'top',
+    'jeans',
+    'tshirt',
+    'women',
+    'men',
+    'blue',
+    'white',
+    'black'
+  ];
   return {
-    searchTerm: faker.helpers.arrayElement(products),
+    searchTerm: faker.helpers.arrayElement(searchTerms),
     quantity: faker.number.int({ min: 1, max: 5 }).toString()
   };
 }

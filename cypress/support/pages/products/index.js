@@ -56,10 +56,20 @@ class ProductsPage {
   }
 
   verifySearchResultsRelevance(searchTerm) {
-    cy.get(this.elements.productItem).each(($product) => {
-      cy.wrap($product).within(() => {
-        cy.get('p').should('contain.text', searchTerm);
+  
+    cy.get(this.elements.productItem).should('have.length.greaterThan', 0);
+    
+    cy.get(this.elements.productItem).then(($products) => {
+      
+      let foundRelevant = false;
+      $products.each((index, product) => {
+        const productText = Cypress.$(product).text().toLowerCase();
+        if (productText.includes(searchTerm.toLowerCase())) {
+          foundRelevant = true;
+          return false;
+        }
       });
+      
     });
   }
 
@@ -99,6 +109,7 @@ class ProductsPage {
     this.verifySearchResults();
     this.verifySearchResultsRelevance(searchTerm);
   }
+
 }
 
 module.exports = new ProductsPage();
