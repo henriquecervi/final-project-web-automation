@@ -95,7 +95,7 @@ jobs:
         with:
           name: 'Cypress Test Results - ${{ matrix.browser }}'
           path: 'cypress/reports/*.json'
-          reporter: 'mochawesome-json'
+          reporter: 'mocha-json'
           fail-on-error: false
 
   test-summary:
