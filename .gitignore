@@ -102,6 +102,7 @@ dist
 cypress/videos/
 cypress/screenshots/
 cypress/downloads/
+cypress/reports/
 
 # Allure
 allure-results/
