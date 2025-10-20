@@ -1,5 +1,5 @@
 const { defineConfig } = require("cypress");
-const allurePlugin = require("@mmisty/cypress-allure-adapter/plugins");
+const allureWriter = require("allure-cypress/reporter");
 
 module.exports = defineConfig({
   e2e: {
@@ -11,7 +11,7 @@ module.exports = defineConfig({
     video: true,
     screenshotOnRunFailure: true,
     setupNodeEvents(on, config) {
-      allurePlugin(on, config);
+      allureWriter(on, config);
       return config;
     },
   },

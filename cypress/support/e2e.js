@@ -16,4 +16,4 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
-import '@mmisty/cypress-allure-adapter/support';
+import 'allure-cypress';
