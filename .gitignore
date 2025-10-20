@@ -101,8 +101,11 @@ dist
 # Cypress
 cypress/videos/
 cypress/screenshots/
-cypress/reports/
 cypress/downloads/
+
+# Allure
+allure-results/
+allure-report/
 
 # IDE
 .vscode/
