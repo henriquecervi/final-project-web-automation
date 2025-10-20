@@ -144,20 +144,25 @@ generateUniqueEmail() // Avoids conflicts between tests
 
 ## 📊 **Enterprise-Grade Reporting System**
 
-### **Mochawesome Integration**:
-- **HTML reports** rich and interactive generated automatically
+### **Allure Integration**:
+- **Beautiful HTML reports** rich and interactive generated automatically
 - **Screenshots** captured in case of failures
 - **Complete videos** of executions (headless mode)
 - **Detailed metrics** of performance and coverage
 - **Timestamps** for traceability
+- **GitHub Pages Integration** for live report viewing
 
 ### **How to Access Reports**:
 ```bash
 # Reports are automatically generated after execution in:
-cypress/reports/
+allure-results/
 
-# To run and view reports
-npm run test:report
+# Generate and view Allure report locally:
+npx allure generate allure-results --clean -o allure-report
+npx allure open allure-report
+
+# To run tests and generate Allure reports
+npm test
 ```
 
 ## 🚀 **GitHub Actions Pipeline**
@@ -221,7 +226,7 @@ npm run test:report
 4. **✅ Execution without breaks**: Stable and reliable tests
 5. **✅ Adequate selectors**: Robust and maintainable CSS Selectors
 6. **✅ Best practices**: Page Object Model and modular architecture
-7. **✅ Reports**: Professional Mochawesome Reporter
+7. **✅ Reports**: Professional Allure Reporter
 
 ### **📋 Complete Delivery Format**:
 - ✅ **GitHub project** with public URL
@@ -235,7 +240,7 @@ npm run test:report
 ### **cypress.config.js**:
 - **baseUrl**: Configured for https://automationexercise.com
 - **Timeouts**: Optimized for stability (10s default)
-- **Reports**: Mochawesome integrated and configured
+- **Reports**: Allure integrated and configured
 - **Media**: Screenshots and videos enabled for debugging
 
 ### **Updated NPM Scripts**:
@@ -268,7 +273,7 @@ This comprehensive testing suite represents a professional-grade automation solu
 
 - **🎯 Advanced Cypress Framework**: Complete E2E automation with modern best practices
 - **🏗️ Enterprise Architecture**: Scalable Page Object Model with modular design
-- **🔧 Modern Tool Integration**: Faker.js, Mochawesome, and GitHub Actions
+- **🔧 Modern Tool Integration**: Faker.js, Allure, and GitHub Actions
 - **🚀 CI/CD Excellence**: Automated testing pipeline with live reporting
 - **📊 Professional Standards**: Industry-grade testing methodologies and practices
 - **🧹 Code Quality**: Optimized, maintainable, and production-ready automation code

@@ -81,12 +81,12 @@ jobs:
           path: cypress/videos
           retention-days: 7
           
-      - name: 📋 Upload Artifacts - Reports
+      - name: 📋 Upload Artifacts - Allure Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-reports-${{ matrix.browser }}
-          path: cypress/reports
+          name: allure-results-${{ matrix.browser }}
+          path: allure-results
           retention-days: 30
 
   test-summary:
@@ -118,13 +118,13 @@ jobs:
           echo "### 🏗️ Architecture Used:" >> $GITHUB_STEP_SUMMARY
           echo "- **Page Object Model** for modular organization" >> $GITHUB_STEP_SUMMARY
           echo "- **Faker.js** for dynamic and unique data" >> $GITHUB_STEP_SUMMARY
-          echo "- **Mochawesome Reporter** for professional reports" >> $GITHUB_STEP_SUMMARY
+          echo "- **Allure Reporter** for professional reports" >> $GITHUB_STEP_SUMMARY
           echo "- **GitHub Actions** for automated CI/CD" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📊 Generated Artifacts:" >> $GITHUB_STEP_SUMMARY
           echo "- Screenshots (in case of failures)" >> $GITHUB_STEP_SUMMARY
           echo "- Execution videos" >> $GITHUB_STEP_SUMMARY
-          echo "- Detailed HTML reports" >> $GITHUB_STEP_SUMMARY
+          echo "- Beautiful Allure HTML reports" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "**🎓 Project**: PGATS - Final Project - Web Automation" >> $GITHUB_STEP_SUMMARY
@@ -146,29 +146,29 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
         
-      - name: 📥 Download Reports Artifact
+      - name: 📥 Download Allure Results
         uses: actions/download-artifact@v4
         with:
-          name: cypress-reports-chrome
-          path: cypress/reports
+          name: allure-results-chrome
+          path: allure-results
         continue-on-error: true
         
+      - name: 🏗️ Generate Allure Report
+        run: |
+          npx allure generate allure-results --clean -o allure-report
+          echo "✅ Allure report generated!"
+          
       - name: 📁 Prepare Reports for Pages
         run: |
           mkdir -p reports
           
-          # If we have real reports, use them as index.html
-          if [ -d cypress/reports ] && [ "$(ls -A cypress/reports)" ]; then
-            echo "✅ Copying real test reports..."
-            cp -r cypress/reports/* reports/
-            
-            # Rename the mochawesome file to index.html for GitHub Pages
-            if [ -f reports/mochawesome_*.html ]; then
-              mv reports/mochawesome_*.html reports/index.html
-              echo "✅ Using real test report as index.html"
-            fi
+          # Copy Allure report to reports directory
+          if [ -d allure-report ] && [ "$(ls -A allure-report)" ]; then
+            echo "✅ Copying Allure report..."
+            cp -r allure-report/* reports/
+            echo "✅ Allure report ready for GitHub Pages!"
           else
-            echo "❌ No real reports found, using placeholder..."
+            echo "❌ No Allure report found, using placeholder..."
             cp index.html reports/
           fi
           
