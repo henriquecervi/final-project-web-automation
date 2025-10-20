@@ -1,5 +1,5 @@
 const { defineConfig } = require("cypress");
-const allureWriter = require("allure-cypress/reporter");
+const allureWriter = require("@shelex/cypress-allure-plugin/writer");
 
 module.exports = defineConfig({
   e2e: {
@@ -10,6 +10,10 @@ module.exports = defineConfig({
     viewportHeight: 720,
     video: true,
     screenshotOnRunFailure: true,
+    env: {
+      allure: true,
+      allureResultsPath: 'allure-results'
+    },
     setupNodeEvents(on, config) {
       allureWriter(on, config);
       return config;
